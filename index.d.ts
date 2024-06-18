@@ -19697,7 +19697,7 @@ export declare class Pencil<T extends Record<string, Manager> = Record<string, M
 	};
 	update(delta: number): void;
 	resize(width: number, height: number): void;
-	start(): void;
+	start(fn?: (delta: number) => void): void;
 	stop(): void;
 	dispose(): void;
 }
