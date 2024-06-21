@@ -20605,7 +20605,7 @@ export declare class CacheManager extends Manager {
 	dispose(): void;
 }
 type AssetInfo = {
-	type: "gltf" | "texture" | "json";
+	type: "gltf" | "texture" | "json" | "video";
 	url: string;
 	version?: string;
 	total?: number;
@@ -20629,9 +20629,11 @@ export declare class AssetManager extends Manager {
 	getAsset(url: `${string}.gltf`): Promise<GLTF>;
 	getAsset(url: `${string}.jpg`): Promise<THREE.Texture>;
 	getAsset(url: `${string}.png`): Promise<THREE.Texture>;
+	getAsset(url: `${string}.mp4`): Promise<THREE.VideoTexture>;
 	private getCache;
 	loadGltf(asset: AssetInfo): Promise<GLTF>;
 	loadTexture(asset: AssetInfo): Promise<THREE.Texture>;
+	loadVideoTexture(asset: AssetInfo): Promise<THREE.VideoTexture>;
 	loadJSON(asset: AssetInfo): Promise<unknown>;
 	dispose(): void;
 }
@@ -20748,6 +20750,14 @@ export declare class Marker extends Component$1 {
 	create(): void;
 	dispose(): void;
 }
+export declare const disposeObject3D: (object: THREE.Object3D) => void;
+export declare const createPromise: () => {
+	promise: Promise<unknown>;
+	resolve: (value?: unknown) => void;
+	reject: (reason?: unknown) => void;
+};
+export declare function calculateVerticalFoV(horizontalFoV: number, aspect?: number): number;
+export declare function calculateHorizontalFoV(verticalFoV: number, aspect?: number): number;
 
 declare namespace MathUtils$1 {
 	export { DEG2RAD, MathUtils, RAD2DEG, ceilPowerOfTwo, clamp, damp, degToRad, denormalize, euclideanModulo, floorPowerOfTwo, generateUUID, inverseLerp, isPowerOfTwo, lerp, mapLinear, normalize, pingpong, radToDeg, randFloat, randFloatSpread, randInt, seededRandom, setQuaternionFromProperEuler, smootherstep, smoothstep };
