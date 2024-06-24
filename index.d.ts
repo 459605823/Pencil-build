@@ -20503,9 +20503,9 @@ export declare class EventManager extends Manager {
 	readonly name = "EventManager";
 	private emitter;
 	constructor();
-	on(type: string, handler: (...args: any[]) => void): void;
-	off(type: string, handler: (...args: any[]) => void): void;
-	emit(type: string, ...args: any[]): void;
+	on(type: string, handler: (args: any) => void): void;
+	off(type: string, handler: (args: any) => void): void;
+	emit(type: string, args: any): void;
 	dispose(): void;
 }
 declare class InteractiveObject {
@@ -20604,37 +20604,35 @@ export declare class CacheManager extends Manager {
 	clear(): void;
 	dispose(): void;
 }
+type AssetType = "gltf" | "texture" | "json" | "video";
 type AssetInfo = {
-	type: "gltf" | "texture" | "json" | "video";
+	type: AssetType;
 	url: string;
 	version?: string;
-	total?: number;
-	loaded?: number;
 };
 export declare class AssetManager extends Manager {
 	readonly name = "AssetManager";
 	private assetStore;
 	private assetMap;
 	private loadingManager;
-	private gltfLoader;
+	private loaders;
 	private dracoLoader;
-	private textureLoader;
-	private fileLoader;
+	get total(): number;
+	get loaded(): number;
+	get progress(): number;
+	get isLoaded(): boolean;
 	constructor();
 	setDracoPath(dracoPath: string): void;
-	setAsset(assets: Omit<AssetInfo, "total" | "loaded">[]): void;
+	setAsset(assets: AssetInfo[] | AssetInfo): void;
 	load(): Promise<any[]>;
-	private loadAsset;
+	loadAsset(asset: AssetInfo): Promise<any>;
+	loadVideoTexture(asset: AssetInfo): Promise<THREE.VideoTexture>;
+	private assetLoaded;
 	getAsset(url: `${string}.glb`): Promise<GLTF>;
 	getAsset(url: `${string}.gltf`): Promise<GLTF>;
 	getAsset(url: `${string}.jpg`): Promise<THREE.Texture>;
 	getAsset(url: `${string}.png`): Promise<THREE.Texture>;
 	getAsset(url: `${string}.mp4`): Promise<THREE.VideoTexture>;
-	private getCache;
-	loadGltf(asset: AssetInfo): Promise<GLTF>;
-	loadTexture(asset: AssetInfo): Promise<THREE.Texture>;
-	loadVideoTexture(asset: AssetInfo): Promise<THREE.VideoTexture>;
-	loadJSON(asset: AssetInfo): Promise<unknown>;
 	dispose(): void;
 }
 export declare class LightManager extends Manager {
@@ -20758,6 +20756,7 @@ export declare const createPromise: () => {
 };
 export declare function calculateVerticalFoV(horizontalFoV: number, aspect?: number): number;
 export declare function calculateHorizontalFoV(verticalFoV: number, aspect?: number): number;
+export declare const getCache: (url: string, type?: "blob" | "json", version?: string) => Promise<string>;
 
 declare namespace MathUtils$1 {
 	export { DEG2RAD, MathUtils, RAD2DEG, ceilPowerOfTwo, clamp, damp, degToRad, denormalize, euclideanModulo, floorPowerOfTwo, generateUUID, inverseLerp, isPowerOfTwo, lerp, mapLinear, normalize, pingpong, radToDeg, randFloat, randFloatSpread, randInt, seededRandom, setQuaternionFromProperEuler, smootherstep, smoothstep };
