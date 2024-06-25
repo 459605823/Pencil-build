@@ -20604,7 +20604,7 @@ export declare class CacheManager extends Manager {
 	clear(): void;
 	dispose(): void;
 }
-type AssetType = "gltf" | "texture" | "json" | "video";
+type AssetType = "gltf" | "texture" | "json" | "video" | "hdr" | "exr";
 type AssetInfo = {
 	type: AssetType;
 	url: string;
