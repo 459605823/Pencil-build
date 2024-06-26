@@ -19444,6 +19444,202 @@ interface Options$1 {
 	background?: THREE.Texture | THREE.Color;
 }
 declare const _default: (options?: Options$1) => THREE.Scene;
+declare class Manager {
+	pencil?: Pencil;
+	name: string;
+	install(pencil: Pencil): void;
+	update(delta?: number): void;
+	setSize(width: number, height: number): void;
+	dispose(): void;
+}
+type KeyOf<T extends object> = Extract<keyof T, string>;
+interface ComponentOptions {
+	[key: string]: any;
+	key?: string;
+}
+declare class Component$1 {
+	isComponent: boolean;
+	options: ComponentOptions;
+	object3D: THREE.Object3D;
+	id: string;
+	pencil?: Pencil;
+	userData: Record<string, any>;
+	pm: {
+		promise: Promise<unknown>;
+		resolve: (value?: unknown) => void;
+		reject: (reason?: unknown) => void;
+	};
+	get visible(): boolean;
+	get boundingBox(): THREE.Box3;
+	constructor(options?: ComponentOptions);
+	create(): void;
+	render(): void;
+	update(): void;
+	setSize(width: number, height: number): void;
+	hide(): void;
+	show(): void;
+	add(object: Parameters<THREE.Object3D["add"]>[0]): void;
+	remove(object: Parameters<THREE.Object3D["remove"]>[0]): void;
+	dispose(): void;
+}
+export declare class ComponentManager<T extends Record<string, new (...args: any[]) => Component$1>> extends Manager {
+	readonly name = "ComponentManager";
+	private componentMap;
+	private instances;
+	get componentPromise(): any[];
+	constructor(componentMap: T);
+	getInstances<Y extends KeyOf<T>>(name: Y): InstanceType<T[Y]>[];
+	getInstances<Y extends KeyOf<T>>(name: Y, key: string): InstanceType<T[Y]> | undefined;
+	getInstances<Y extends KeyOf<T>>(name: Y, key: string[]): InstanceType<T[Y]>[];
+	draw<Y extends KeyOf<T>>(name: Y, options?: ConstructorParameters<T[Y]>[0], parent?: THREE.Object3D | Component$1): Promise<InstanceType<T[Y]>>;
+	erase(name: KeyOf<T> | InstanceType<T[keyof T]> | InstanceType<T[keyof T]>[], key?: string | string[]): void;
+	clear(): void;
+	update(): void;
+	setSize(width: number, height: number): void;
+	dispose(): void;
+}
+export declare class EventManager extends Manager {
+	readonly name = "EventManager";
+	private emitter;
+	constructor();
+	on(type: string, handler: (args: any) => void): void;
+	off(type: string, handler: (args: any) => void): void;
+	emit(type: string, args: any): void;
+	dispose(): void;
+}
+declare class InteractiveObject {
+	target: THREE.Object3D;
+	name: string;
+	intersected: boolean;
+	wasIntersected: boolean;
+	distance: number;
+	constructor(target: THREE.Object3D, name: string);
+}
+declare class InteractiveEvent {
+	type: string;
+	cancelBubble: boolean;
+	originalEvent: Event | null;
+	coords: Vector2;
+	distance: number;
+	intersected: boolean;
+	constructor(type: string, originalEvent?: Event | null);
+	stopPropagation(): void;
+}
+declare class InteractionManagerOptions {
+	bindEventsOnBodyElement: boolean;
+	autoAdd: boolean;
+	scene: THREE.Scene | null;
+	constructor(options: {
+		bindEventsOnBodyElement?: boolean | undefined;
+		autoAdd?: boolean | undefined;
+		scene?: THREE.Scene | undefined;
+	});
+}
+declare class InteractionManager {
+	renderer: THREE.Renderer;
+	camera: THREE.Camera;
+	domElement: HTMLElement;
+	bindEventsOnBodyElement: boolean;
+	autoAdd: boolean;
+	scene: THREE.Scene | null;
+	mouse: Vector2;
+	supportsPointerEvents: boolean;
+	interactiveObjects: InteractiveObject[];
+	closestObject: InteractiveObject | null;
+	raycaster: THREE.Raycaster;
+	treatTouchEventsAsMouseEvents: boolean;
+	constructor(renderer: THREE.Renderer, camera: THREE.Camera, domElement: HTMLElement, options?: InteractionManagerOptions);
+	dispose: () => void;
+	add: (object: THREE.Object3D, childNames?: string[]) => void;
+	remove: (object: THREE.Object3D, childNames?: string[]) => void;
+	update: () => void;
+	checkIntersection: (object: InteractiveObject) => void;
+	onDocumentMouseMove: (mouseEvent: MouseEvent) => void;
+	onDocumentPointerMove: (pointerEvent: PointerEvent) => void;
+	onTouchMove: (touchEvent: TouchEvent) => void;
+	onMouseClick: (mouseEvent: MouseEvent) => void;
+	onMouseDown: (mouseEvent: MouseEvent) => void;
+	onPointerDown: (pointerEvent: PointerEvent) => void;
+	onTouchStart: (touchEvent: TouchEvent) => void;
+	onMouseUp: (mouseEvent: MouseEvent) => void;
+	onPointerUp: (pointerEvent: PointerEvent) => void;
+	onTouchEnd: (touchEvent: TouchEvent) => void;
+	dispatch: (object: InteractiveObject, event: InteractiveEvent) => void;
+	mapPositionToPoint: (point: Vector2, x: number, y: number) => void;
+}
+declare class InteractionManager$1 extends Manager {
+	readonly name = "InteractionManager";
+	im: InteractionManager;
+	constructor(renderer: Renderer, camera: Camera);
+	update(): void;
+	dispose(): void;
+}
+export type GuiParams = Record<string, {
+	value?: number | string | boolean;
+	min?: number;
+	max?: number;
+	step?: number;
+	options?: ({
+		text: string;
+		value: any;
+	} | string)[];
+	onChange?: (value: any) => void;
+	target?: () => any;
+}>;
+export declare class GuiManager extends Manager {
+	readonly name = "GuiManager";
+	pane: Pane;
+	constructor();
+	addFolder(title: string, config: GuiParams): import("tweakpane").FolderApi;
+	update(): void;
+	dispose(): void;
+}
+export declare class CacheManager extends Manager {
+	readonly name = "CacheManager";
+	private cache;
+	set(key: string, value: any): void;
+	get(key: string): any;
+	remove(key: string): void;
+	clear(): void;
+	dispose(): void;
+}
+type AssetType = "gltf" | "texture" | "json" | "video" | "hdr" | "exr";
+type AssetInfo = {
+	type: AssetType;
+	url: string;
+	version?: string;
+};
+export declare class AssetManager extends Manager {
+	readonly name = "AssetManager";
+	private assetStore;
+	private assetMap;
+	private loadingManager;
+	private loaders;
+	private dracoLoader;
+	get total(): number;
+	get loaded(): number;
+	get progress(): number;
+	get isLoaded(): boolean;
+	constructor();
+	setDracoPath(dracoPath: string): void;
+	setAsset(assets: AssetInfo[] | AssetInfo): void;
+	load(): Promise<any[]>;
+	loadAsset(asset: AssetInfo): Promise<any>;
+	loadVideoTexture(asset: AssetInfo): Promise<THREE.VideoTexture>;
+	private assetLoaded;
+	getAsset(url: `${string}.glb`): Promise<GLTF>;
+	getAsset(url: `${string}.gltf`): Promise<GLTF>;
+	getAsset(url: `${string}.jpg`): Promise<THREE.Texture>;
+	getAsset(url: `${string}.png`): Promise<THREE.Texture>;
+	getAsset(url: `${string}.mp4`): Promise<THREE.VideoTexture>;
+	dispose(): void;
+}
+export declare class LightManager extends Manager {
+	readonly name = "LightManager";
+	constructor();
+	createAmbientLight(color?: number): void;
+	createDirectionalLight(color?: number, intensity?: number, position?: THREE.Vector3, target?: THREE.Vector3): void;
+}
 interface Options$2 {
 	width: number;
 	height: number;
@@ -20444,202 +20640,6 @@ declare class ComposerController {
 	constructor(options: Options$4);
 	addBloomEffect(): SelectiveBloomEffect;
 	dispose(): void;
-}
-declare class Manager {
-	pencil?: Pencil;
-	name: string;
-	install(pencil: Pencil): void;
-	update(delta?: number): void;
-	setSize(width: number, height: number): void;
-	dispose(): void;
-}
-type KeyOf<T extends object> = Extract<keyof T, string>;
-interface ComponentOptions {
-	[key: string]: any;
-	key?: string;
-}
-declare class Component$1 {
-	isComponent: boolean;
-	options: ComponentOptions;
-	object3D: THREE.Object3D;
-	id: string;
-	pencil?: Pencil;
-	userData: Record<string, any>;
-	pm: {
-		promise: Promise<unknown>;
-		resolve: (value?: unknown) => void;
-		reject: (reason?: unknown) => void;
-	};
-	get visible(): boolean;
-	get boundingBox(): THREE.Box3;
-	constructor(options?: ComponentOptions);
-	create(): void;
-	render(): void;
-	update(): void;
-	setSize(width: number, height: number): void;
-	hide(): void;
-	show(): void;
-	add(object: Parameters<THREE.Object3D["add"]>[0]): void;
-	remove(object: Parameters<THREE.Object3D["remove"]>[0]): void;
-	dispose(): void;
-}
-export declare class ComponentManager<T extends Record<string, new (...args: any[]) => Component$1>> extends Manager {
-	readonly name = "ComponentManager";
-	private componentMap;
-	private instances;
-	get componentPromise(): any[];
-	constructor(componentMap: T);
-	getInstances<Y extends KeyOf<T>>(name: Y): InstanceType<T[Y]>[];
-	getInstances<Y extends KeyOf<T>>(name: Y, key: string): InstanceType<T[Y]> | undefined;
-	getInstances<Y extends KeyOf<T>>(name: Y, key: string[]): InstanceType<T[Y]>[];
-	draw<Y extends KeyOf<T>>(name: Y, options?: ConstructorParameters<T[Y]>[0], parent?: THREE.Object3D | Component$1): Promise<InstanceType<T[Y]>>;
-	erase(name: KeyOf<T> | InstanceType<T[keyof T]> | InstanceType<T[keyof T]>[], key?: string | string[]): void;
-	clear(): void;
-	update(): void;
-	setSize(width: number, height: number): void;
-	dispose(): void;
-}
-export declare class EventManager extends Manager {
-	readonly name = "EventManager";
-	private emitter;
-	constructor();
-	on(type: string, handler: (args: any) => void): void;
-	off(type: string, handler: (args: any) => void): void;
-	emit(type: string, args: any): void;
-	dispose(): void;
-}
-declare class InteractiveObject {
-	target: THREE.Object3D;
-	name: string;
-	intersected: boolean;
-	wasIntersected: boolean;
-	distance: number;
-	constructor(target: THREE.Object3D, name: string);
-}
-declare class InteractiveEvent {
-	type: string;
-	cancelBubble: boolean;
-	originalEvent: Event | null;
-	coords: Vector2;
-	distance: number;
-	intersected: boolean;
-	constructor(type: string, originalEvent?: Event | null);
-	stopPropagation(): void;
-}
-declare class InteractionManagerOptions {
-	bindEventsOnBodyElement: boolean;
-	autoAdd: boolean;
-	scene: THREE.Scene | null;
-	constructor(options: {
-		bindEventsOnBodyElement?: boolean | undefined;
-		autoAdd?: boolean | undefined;
-		scene?: THREE.Scene | undefined;
-	});
-}
-declare class InteractionManager {
-	renderer: THREE.Renderer;
-	camera: THREE.Camera;
-	domElement: HTMLElement;
-	bindEventsOnBodyElement: boolean;
-	autoAdd: boolean;
-	scene: THREE.Scene | null;
-	mouse: Vector2;
-	supportsPointerEvents: boolean;
-	interactiveObjects: InteractiveObject[];
-	closestObject: InteractiveObject | null;
-	raycaster: THREE.Raycaster;
-	treatTouchEventsAsMouseEvents: boolean;
-	constructor(renderer: THREE.Renderer, camera: THREE.Camera, domElement: HTMLElement, options?: InteractionManagerOptions);
-	dispose: () => void;
-	add: (object: THREE.Object3D, childNames?: string[]) => void;
-	remove: (object: THREE.Object3D, childNames?: string[]) => void;
-	update: () => void;
-	checkIntersection: (object: InteractiveObject) => void;
-	onDocumentMouseMove: (mouseEvent: MouseEvent) => void;
-	onDocumentPointerMove: (pointerEvent: PointerEvent) => void;
-	onTouchMove: (touchEvent: TouchEvent) => void;
-	onMouseClick: (mouseEvent: MouseEvent) => void;
-	onMouseDown: (mouseEvent: MouseEvent) => void;
-	onPointerDown: (pointerEvent: PointerEvent) => void;
-	onTouchStart: (touchEvent: TouchEvent) => void;
-	onMouseUp: (mouseEvent: MouseEvent) => void;
-	onPointerUp: (pointerEvent: PointerEvent) => void;
-	onTouchEnd: (touchEvent: TouchEvent) => void;
-	dispatch: (object: InteractiveObject, event: InteractiveEvent) => void;
-	mapPositionToPoint: (point: Vector2, x: number, y: number) => void;
-}
-declare class InteractionManager$1 extends Manager {
-	readonly name = "InteractionManager";
-	im: InteractionManager;
-	constructor(renderer: Renderer, camera: Camera);
-	update(): void;
-	dispose(): void;
-}
-export type GuiParams = Record<string, {
-	value?: number | string | boolean;
-	min?: number;
-	max?: number;
-	step?: number;
-	options?: ({
-		text: string;
-		value: any;
-	} | string)[];
-	onChange?: (value: any) => void;
-	target?: () => any;
-}>;
-export declare class GuiManager extends Manager {
-	readonly name = "GuiManager";
-	pane: Pane;
-	constructor();
-	addFolder(title: string, config: GuiParams): import("tweakpane").FolderApi;
-	update(): void;
-	dispose(): void;
-}
-export declare class CacheManager extends Manager {
-	readonly name = "CacheManager";
-	private cache;
-	set(key: string, value: any): void;
-	get(key: string): any;
-	remove(key: string): void;
-	clear(): void;
-	dispose(): void;
-}
-type AssetType = "gltf" | "texture" | "json" | "video" | "hdr" | "exr";
-type AssetInfo = {
-	type: AssetType;
-	url: string;
-	version?: string;
-};
-export declare class AssetManager extends Manager {
-	readonly name = "AssetManager";
-	private assetStore;
-	private assetMap;
-	private loadingManager;
-	private loaders;
-	private dracoLoader;
-	get total(): number;
-	get loaded(): number;
-	get progress(): number;
-	get isLoaded(): boolean;
-	constructor();
-	setDracoPath(dracoPath: string): void;
-	setAsset(assets: AssetInfo[] | AssetInfo): void;
-	load(): Promise<any[]>;
-	loadAsset(asset: AssetInfo): Promise<any>;
-	loadVideoTexture(asset: AssetInfo): Promise<THREE.VideoTexture>;
-	private assetLoaded;
-	getAsset(url: `${string}.glb`): Promise<GLTF>;
-	getAsset(url: `${string}.gltf`): Promise<GLTF>;
-	getAsset(url: `${string}.jpg`): Promise<THREE.Texture>;
-	getAsset(url: `${string}.png`): Promise<THREE.Texture>;
-	getAsset(url: `${string}.mp4`): Promise<THREE.VideoTexture>;
-	dispose(): void;
-}
-export declare class LightManager extends Manager {
-	readonly name = "LightManager";
-	constructor();
-	createAmbientLight(color?: number): void;
-	createDirectionalLight(color?: number, intensity?: number, position?: THREE.Vector3, target?: THREE.Vector3): void;
 }
 interface Options$5 {
 	container: HTMLElement;
