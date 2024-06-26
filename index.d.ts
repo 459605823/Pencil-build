@@ -3,7 +3,7 @@
 import { MeshLineMaterial, MeshLineMaterialParameters } from 'meshline';
 import { EffectComposer as EffectComposer$1, SelectiveBloomEffect } from 'postprocessing';
 import Stats from 'stats.js';
-import { Pane } from 'tweakpane';
+import { FolderApi, Pane } from 'tweakpane';
 
 declare const REVISION: string;
 declare enum MOUSE {
@@ -19590,7 +19590,8 @@ export declare class GuiManager extends Manager {
 	readonly name = "GuiManager";
 	pane: Pane;
 	constructor();
-	addFolder(title: string, config: GuiParams): import("tweakpane").FolderApi;
+	addFolder(title: string, config: GuiParams): FolderApi;
+	findFolder(title: string): import("tweakpane").BladeApi<import("@tweakpane/core").BladeController<import("@tweakpane/core").View>> | undefined;
 	update(): void;
 	dispose(): void;
 }
@@ -20626,6 +20627,7 @@ interface Options$3 {
 	fov?: number;
 	near?: number;
 	far?: number;
+	focalLength?: number;
 	position?: THREE.Vector3;
 }
 declare const _default$2: (options: Options$3) => CameraControls$1;
