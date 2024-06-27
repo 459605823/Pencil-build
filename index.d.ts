@@ -20629,6 +20629,7 @@ interface Options$3 {
 	far?: number;
 	focalLength?: number;
 	position?: THREE.Vector3;
+	target?: THREE.Vector3;
 }
 declare const _default$2: (options: Options$3) => CameraControls$1;
 interface Options$4 {
