@@ -19621,10 +19621,12 @@ export declare class AssetManager extends Manager {
 	get loaded(): number;
 	get progress(): number;
 	get isLoaded(): boolean;
+	get staticPath(): string;
 	constructor();
 	setDracoPath(dracoPath: string): void;
 	setAsset(assets: AssetInfo[] | AssetInfo): void;
 	load(): Promise<any[]>;
+	getAssetUrl(url: string): string;
 	loadAsset(asset: AssetInfo): Promise<any>;
 	loadVideoTexture(asset: AssetInfo): Promise<THREE.VideoTexture>;
 	private assetLoaded;
@@ -20646,6 +20648,7 @@ declare class ComposerController {
 }
 interface Options$5 {
 	container: HTMLElement;
+	staticPath?: string;
 	dev?: boolean;
 	scene?: Options$1;
 	renderer?: Omit<Options$2, "width" | "height" | "dev">;
