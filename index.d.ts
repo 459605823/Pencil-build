@@ -20638,6 +20638,7 @@ interface Options$4 {
 	renderer: THREE.WebGLRenderer;
 	scene: THREE.Scene;
 	camera: THREE.Camera;
+	multisampling?: number;
 }
 declare class ComposerController {
 	composer: EffectComposer$1;
@@ -20654,6 +20655,7 @@ interface Options$5 {
 	renderer?: Omit<Options$2, "width" | "height" | "dev">;
 	cssRenderer?: "2d" | "3d" | "both";
 	camera?: Omit<Options$3, "width" | "height" | "domElement">;
+	multisampling?: number;
 }
 export declare class Pencil<T extends Record<string, Manager> = Record<string, Manager>> {
 	option: Options$5;
