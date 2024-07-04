@@ -2,7 +2,6 @@
 
 import { MeshLineMaterial, MeshLineMaterialParameters } from 'meshline';
 import { EffectComposer as EffectComposer$1, FXAAEffect, SelectiveBloomEffect } from 'postprocessing';
-import Stats from 'stats.js';
 import { FolderApi, Pane } from 'tweakpane';
 
 declare const REVISION: string;
@@ -19470,7 +19469,7 @@ declare class Component$1 {
 		reject: (reason?: unknown) => void;
 	};
 	get visible(): boolean;
-	get boundingBox(): THREE.Box3;
+	get bbox(): THREE.Box3;
 	constructor(options?: ComponentOptions);
 	create(): void;
 	render(): void;
@@ -20665,11 +20664,11 @@ export declare class Pencil<T extends Record<string, Manager> = Record<string, M
 	option: Options$5;
 	scene?: ReturnType<typeof _default>;
 	renderer?: ReturnType<typeof _default$1>;
-	stats?: Stats;
 	cssRenderer: Array<CSS2DRenderer | CSS3DRenderer>;
 	cameraControl?: ReturnType<typeof _default$2>;
 	composerController?: ComposerController;
 	private managerMap;
+	private stats?;
 	private resizeObserver?;
 	get camera(): THREE.PerspectiveCamera;
 	get eventManager(): EventManager;
@@ -20677,6 +20676,7 @@ export declare class Pencil<T extends Record<string, Manager> = Record<string, M
 	get guiManager(): GuiManager | undefined;
 	get assetManager(): AssetManager;
 	get cacheManager(): CacheManager;
+	get sceneBbox(): THREE.Box3;
 	constructor(options: Options$5, managers?: T);
 	private init;
 	private registerManager;
