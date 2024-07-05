@@ -20777,6 +20777,19 @@ export declare class Marker extends Component$1 {
 	dispose(): void;
 }
 export declare const disposeObject3D: (object: THREE.Object3D) => void;
+export declare const getBounds: (object: THREE.Object3D) => {
+	bbox: THREE.Box3;
+	center: THREE.Vector3;
+	size: THREE.Vector3;
+};
+export declare const isObjectVisible: (object: THREE.Object3D, camera: THREE.Camera, raycaster: THREE.Raycaster, occlude: THREE.Object3D[]) => boolean;
+export declare const downloadBlob: (blob: Blob, filename: string) => void;
+export declare const getElementViewLeft: (element: HTMLElement) => number;
+export declare const getElementViewTop: (element: HTMLElement) => number;
+export declare const getCirclePosition: (index: number, total: number, radius: number) => {
+	x: number;
+	y: number;
+};
 export declare const createPromise: () => {
 	promise: Promise<unknown>;
 	resolve: (value?: unknown) => void;
@@ -20806,6 +20819,13 @@ export {
 	Component$1 as Component,
 	InteractionManager$1 as InteractionManager,
 	Line$1 as Line,
+	Options$1 as SceneOptions,
+	Options$2 as RendererOptions,
+	Options$3 as CameraOptions,
+	Options$5 as PencilOptions,
+	Options$6 as LineOptions,
+	Options$7 as ParticleOptions,
+	Options$8 as MarkerOptions,
 	THREE,
 	THREE_STDLIB,
 };
