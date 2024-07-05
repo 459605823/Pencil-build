@@ -19457,10 +19457,11 @@ interface ComponentOptions {
 	key?: string;
 }
 declare class Component$1 {
-	isComponent: boolean;
+	readonly isComponent = true;
 	options: ComponentOptions;
 	object3D: THREE.Object3D;
 	id: string;
+	private manager?;
 	pencil?: Pencil;
 	userData: Record<string, any>;
 	pm: {
@@ -19468,8 +19469,15 @@ declare class Component$1 {
 		resolve: (value?: unknown) => void;
 		reject: (reason?: unknown) => void;
 	};
+	/**
+	 * 表示组件是否在视野内，没有被其他物体遮挡
+	 */
 	get visible(): boolean;
-	get bbox(): THREE.Box3;
+	get bound(): {
+		bbox: THREE.Box3;
+		center: THREE.Vector3;
+		size: THREE.Vector3;
+	};
 	constructor(options?: ComponentOptions);
 	create(): void;
 	render(): void;
@@ -19479,6 +19487,7 @@ declare class Component$1 {
 	show(): void;
 	add(object: Parameters<THREE.Object3D["add"]>[0]): void;
 	remove(object: Parameters<THREE.Object3D["remove"]>[0]): void;
+	has(object: THREE.Object3D): boolean;
 	dispose(): void;
 }
 export declare class ComponentManager<T extends Record<string, new (...args: any[]) => Component$1>> extends Manager {
@@ -19486,6 +19495,7 @@ export declare class ComponentManager<T extends Record<string, new (...args: any
 	private componentMap;
 	private instances;
 	get componentPromise(): any[];
+	get objects(): any[];
 	constructor(componentMap: T);
 	getInstances<Y extends KeyOf<T>>(name: Y): InstanceType<T[Y]>[];
 	getInstances<Y extends KeyOf<T>>(name: Y, key: string): InstanceType<T[Y]> | undefined;
@@ -20670,18 +20680,24 @@ export declare class Pencil<T extends Record<string, Manager> = Record<string, M
 	private managerMap;
 	private stats?;
 	private resizeObserver?;
+	raycaster: THREE.Raycaster;
 	get camera(): THREE.PerspectiveCamera;
 	get eventManager(): EventManager;
 	get interactionManager(): InteractionManager;
 	get guiManager(): GuiManager | undefined;
 	get assetManager(): AssetManager;
 	get cacheManager(): CacheManager;
-	get sceneBbox(): THREE.Box3;
+	get bound(): {
+		bbox: THREE.Box3;
+		center: THREE.Vector3;
+		size: THREE.Vector3;
+	};
 	constructor(options: Options$5, managers?: T);
 	private init;
 	private registerManager;
 	private unregisterManager;
 	getManager<Y extends KeyOf<T>>(name: Y): T[Y];
+	pick(objects: THREE.Object3D[], recursive?: boolean): THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[];
 	getSize(): {
 		width: number;
 		height: number;
