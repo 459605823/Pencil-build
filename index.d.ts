@@ -19481,7 +19481,7 @@ declare class Component$1 {
 	constructor(options?: ComponentOptions);
 	create(): void;
 	render(): void;
-	update(): void;
+	update(delta: number): void;
 	setSize(width: number, height: number): void;
 	hide(): void;
 	show(): void;
@@ -19503,7 +19503,7 @@ export declare class ComponentManager<T extends Record<string, new (...args: any
 	draw<Y extends KeyOf<T>>(name: Y, options?: ConstructorParameters<T[Y]>[0], parent?: THREE.Object3D | Component$1): Promise<InstanceType<T[Y]>>;
 	erase(name: KeyOf<T> | InstanceType<T[keyof T]> | InstanceType<T[keyof T]>[], key?: string | string[]): void;
 	clear(): void;
-	update(): void;
+	update(delta: number): void;
 	setSize(width: number, height: number): void;
 	dispose(): void;
 }
