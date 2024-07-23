@@ -20667,6 +20667,7 @@ interface Options$5 {
 	dev?: boolean;
 	gui?: boolean;
 	stats?: boolean;
+	axis?: boolean;
 	scene?: Options$1;
 	renderer?: Omit<Options$2, "width" | "height" | "dev">;
 	cssRenderer?: "2d" | "3d" | "both";
