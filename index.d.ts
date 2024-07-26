@@ -19500,6 +19500,7 @@ export declare class ComponentManager<T extends Record<string, new (...args: any
 	getInstances<Y extends KeyOf<T>>(name: Y): InstanceType<T[Y]>[];
 	getInstances<Y extends KeyOf<T>>(name: Y, key: string): InstanceType<T[Y]> | undefined;
 	getInstances<Y extends KeyOf<T>>(name: Y, key: string[]): InstanceType<T[Y]>[];
+	getInstance<Y extends KeyOf<T>>(name: Y, key?: string): InstanceType<T[Y]> | undefined;
 	draw<Y extends KeyOf<T>>(name: Y, options?: ConstructorParameters<T[Y]>[0], parent?: THREE.Object3D | Component$1): Promise<InstanceType<T[Y]>>;
 	erase(name: KeyOf<T> | InstanceType<T[keyof T]> | InstanceType<T[keyof T]>[], key?: string | string[]): void;
 	clear(): void;
