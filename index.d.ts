@@ -19601,6 +19601,7 @@ export declare class GuiManager extends Manager {
 	pane: Pane;
 	constructor();
 	addFolder(title: string, config: GuiParams): FolderApi;
+	addButton(title: string, onClick: () => void): void;
 	findFolder(title: string): import("tweakpane").BladeApi<import("@tweakpane/core").BladeController<import("@tweakpane/core").View>> | undefined;
 	update(): void;
 	dispose(): void;
