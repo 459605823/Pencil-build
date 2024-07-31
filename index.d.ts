@@ -19586,6 +19586,7 @@ declare class InteractionManager$1 extends Manager {
 }
 export type GuiParams = Record<string, {
 	value?: number | string | boolean;
+	label?: string;
 	min?: number;
 	max?: number;
 	step?: number;
