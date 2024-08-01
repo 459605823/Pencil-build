@@ -19475,6 +19475,7 @@ declare class Component$1 {
 	get visible(): boolean;
 	get bound(): {
 		bbox: THREE.Box3;
+		sphere: THREE.Sphere;
 		center: THREE.Vector3;
 		size: THREE.Vector3;
 	};
@@ -19488,6 +19489,8 @@ declare class Component$1 {
 	add(object: Parameters<THREE.Object3D["add"]>[0]): void;
 	remove(object: Parameters<THREE.Object3D["remove"]>[0]): void;
 	has(object: THREE.Object3D): boolean;
+	showBoundingBox(color?: string): void;
+	showBoundingSphere(color?: string): void;
 	dispose(): void;
 }
 export declare class ComponentManager<T extends Record<string, new (...args: any[]) => Component$1>> extends Manager {
@@ -20697,6 +20700,7 @@ export declare class Pencil<T extends Record<string, Manager> = Record<string, M
 	get cacheManager(): CacheManager;
 	get bound(): {
 		bbox: THREE.Box3;
+		sphere: THREE.Sphere;
 		center: THREE.Vector3;
 		size: THREE.Vector3;
 	};
@@ -20787,6 +20791,7 @@ export declare class Marker extends Component$1 {
 declare const disposeObject3D: (object: THREE.Object3D) => void;
 declare const getBounds: (object: THREE.Object3D) => {
 	bbox: THREE.Box3;
+	sphere: THREE.Sphere;
 	center: THREE.Vector3;
 	size: THREE.Vector3;
 };
