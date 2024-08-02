@@ -19587,7 +19587,7 @@ declare class InteractionManager$1 extends Manager {
 	update(): void;
 	dispose(): void;
 }
-export type GuiParams = Record<string, {
+export type GuiParam = {
 	value?: number | string | boolean;
 	label?: string;
 	min?: number;
@@ -19599,13 +19599,17 @@ export type GuiParams = Record<string, {
 	} | string)[];
 	onChange?: (value: any) => void;
 	target?: () => any;
-}>;
+};
+export type GuiParams = Record<string, GuiParam>;
 export declare class GuiManager extends Manager {
 	readonly name = "GuiManager";
 	pane: Pane;
 	constructor();
 	addFolder(title: string, config: GuiParams): FolderApi;
+	addBinding(key: string, config: GuiParam, folder?: FolderApi): import("@tweakpane/core").BindingApi<unknown, any, import("@tweakpane/core/dist/blade/binding/controller/binding").BindingController<unknown, import("@tweakpane/core").ValueController<unknown, import("@tweakpane/core").View, import("@tweakpane/core").Value<unknown>>, import("@tweakpane/core").BindingValue<unknown>>>;
 	addButton(title: string, onClick: () => void): void;
+	exportConfig(): void;
+	importConfig(config: string): void;
 	findFolder(title: string): import("tweakpane").BladeApi<import("@tweakpane/core").BladeController<import("@tweakpane/core").View>> | undefined;
 	update(): void;
 	dispose(): void;
