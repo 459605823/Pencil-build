@@ -19499,7 +19499,7 @@ export declare class ComponentManager<T extends Record<string, new (...args: any
 	private componentMap;
 	private instances;
 	get componentPromise(): any[];
-	get objects(): any[];
+	get object3Ds(): any[];
 	constructor(componentMap: T);
 	getInstances<Y extends KeyOf<T>>(name: Y): InstanceType<T[Y]>[];
 	getInstances<Y extends KeyOf<T>>(name: Y, key: string): InstanceType<T[Y]> | undefined;
@@ -20736,6 +20736,7 @@ export declare class Pencil<T extends Record<string, Manager> = Record<string, M
 	private stats?;
 	private resizeObserver?;
 	raycaster: THREE.Raycaster;
+	private animationFrames;
 	get camera(): THREE.PerspectiveCamera;
 	get eventManager(): EventManager;
 	get interactionManager(): InteractionManager;
@@ -20760,9 +20761,13 @@ export declare class Pencil<T extends Record<string, Manager> = Record<string, M
 	};
 	getCameraPosition(): THREE.Vector3;
 	getCameraTarget(): THREE.Vector3;
-	update(delta: number): void;
+	render(delta: number): void;
 	resize(width: number, height: number): void;
-	start(fn?: (delta: number) => void): void;
+	start(fn?: (delta?: number) => void): void;
+	requestAnimationFrame(fn: (delta?: number) => void, config?: {
+		once?: boolean;
+		duration?: number;
+	}): void;
 	stop(): void;
 	dispose(): void;
 }
@@ -20871,6 +20876,7 @@ declare class Line$1 extends Component$1 {
 	create(): void;
 	animateIn(duration: number): void;
 	render(): void;
+	setSize(width: number, height: number): void;
 	dispose(): void;
 }
 interface Options$7 {
@@ -20916,10 +20922,7 @@ export declare class Marker extends Component$1 {
 }
 interface PolygonOptions {
 	depth: number;
-	coordinates: [
-		number,
-		number
-	][][];
+	coordinates: THREE.Vector2[][];
 	faceMaterial: THREE.Material;
 	sideMaterial: THREE.Material;
 	lineMaterial: MeshLineMaterial;
@@ -20931,10 +20934,7 @@ declare class Polygon extends THREE.Object3D {
 	get mesh(): THREE.Group<THREE.Object3DEventMap> | undefined;
 	get line(): THREE.Group<THREE.Object3DEventMap> | undefined;
 	constructor(options: PolygonOptions);
-	create(polygons: [
-		number,
-		number
-	][][], depth: number): void;
+	create(polygons: THREE.Vector2[][], depth: number): void;
 	createLine(pts: THREE.Vector2[], depth: number): MeshLineGeometry;
 	createMesh(pts: THREE.Vector2[], depth: number): THREE.Mesh<THREE.ExtrudeGeometry, any[], THREE.Object3DEventMap>;
 	dispose(): void;
@@ -20952,15 +20952,18 @@ interface Options$9 {
 export declare class ExtrudeMap extends Component$1 {
 	options: Options$9;
 	polygonMap: Map<string, Polygon>;
+	get topZ(): number;
+	get polygons(): Polygon[];
 	constructor(options: Options$9);
 	create(): void;
 	createMaterials(): void;
 	createPolygons(): void;
 	createOutline(): void;
-	projectPoints(points: number[][]): [
+	projectPoint(point: [
 		number,
 		number
-	][];
+	]): THREE.Vector2;
+	projectPoints(points: number[][]): THREE.Vector2[];
 	dispose(): void;
 }
 declare const disposeObject3D: (object: THREE.Object3D) => void;
@@ -20978,6 +20981,11 @@ declare const getElementViewTop: (element: HTMLElement) => number;
 declare const getCirclePosition: (index: number, total: number, radius: number) => {
 	x: number;
 	y: number;
+};
+declare const lonlat2Spherical: (lon: number, lat: number, radius: number) => {
+	x: number;
+	y: number;
+	z: number;
 };
 declare const createPromise: () => {
 	promise: Promise<unknown>;
@@ -21011,7 +21019,7 @@ declare namespace THREE_STDLIB {
 	export { ACESFilmicToneMappingShader, ACESFilmicToneMappingShaderUniforms, AMFLoader, ARButton, AdaptiveToneMappingPass, AfterimagePass, AfterimageShader, AfterimageShaderUniforms, AmmoPhysics, AnaglyphEffect, AnimationClipCreator, ArcballControls, AsciiEffect, AsciiEffectOptions, Assimp, AssimpLoader, AudioManager, AudioManagerParameter, BVH, BVHLoader, BasicShader, BasicShaderUniforms, BasisTextureLoader, BatchedMesh$1 as BatchedMesh, BleachBypassShader, BleachBypassShaderUniforms, BlendShader, BloomPass, BlurShaderUtils, BokehDepthShader, BokehPass, BokehShader, BokehShader2, BokehShader2Uniforms, BokehShaderDefines, BokehShaderUniforms, BoxLineGeometry, BrightnessContrastShader, CCDIKHelper, CCDIKSolver, CHANGE_EVENT, CMSMode, CMSParameters, CMYK, CSM, CSMFrustum as default, CSMFrustumParameters, CSMFrustumVerticies, CSMHelper, CSMShader, CSS2DObject, CSS2DParameters, CSS2DRenderer, CSS3DObject, CSS3DParameters, CSS3DRenderer, CSS3DSprite, CameraControls, Capsule, Chunk, CinematicCamera, CinquefoilKnot, ClearMaskPass, ClearPass, Collada, ColladaExporter, ColladaExporterOptions, ColladaExporterResult, ColladaLoader, ColorConverter, ColorCorrectionShader, ColorMapKeywords, ColorifyShader, ComputedMorphedAttribute, Constraint, ConvexGeometry, ConvexHull, ConvexObjectBreaker, ConvolutionShader, ConvolutionShaderDefines, ConvolutionShaderUniforms, CopyShader, CopyShaderUniforms, CubeTexturePass, CurveModifierUniforms, CutByPlaneOutput, DDS, DDSLoader, DOFMipMapShader, DRACOExporter, DRACOLoader, DecalGeometry, DecalVertex, DecoratedTorusKnot4a, DecoratedTorusKnot4b, DecoratedTorusKnot5a, DecoratedTorusKnot5c, Defines, DepthLimitedBlurShader, DepthLimitedBlurShaderDefines, DepthLimitedBlurShaderUniforms, DeviceOrientationControls, DigitalGlitch, DotScreenPass, DotScreenShader, DragControls, EXR, EXRLoader, EdgeSplitModifier, EffectComposer, FBXLoader, FXAAShader, Face$1 as Face, Face3, FigureEightPolynomialKnot, FilmPass, FilmShader, FirstPersonControls, FlakesTexture, Flow, FlyControls, FocusShader, Font, FontLoader, FreiChenShader, FresnelShader, FullScreenQuad, GCodeLoader, GLTF, GLTFExporter, GLTFExporterOptions, GLTFExporterPlugin, GLTFLoader, GLTFLoaderPlugin, GLTFParser, GLTFReference, GLTFReferenceType, GLTFWriter, GPUComputationRenderer, GammaCorrectionShader, GammaCorrectionShaderUniforms, Geometry, GeometryCompressionUtils, GeometryUtils, GlitchPass, GodRaysCombineShader, GodRaysDepthMaskShader, GodRaysFakeSunShader, GodRaysGenerateShader, GrannyKnot, GrantSolver, GroundProjectedEnv, GroundProjectedEnvParameters, Gyroscope, HDRCubeTextureLoader, HSL$1 as HSL, HTMLMesh, HalfEdge, HalftonePass, HalftoneShader, HeartCurve, HelixCurve, HorizontalBlurShader, HorizontalBlurShaderUniforms, HorizontalTiltShiftShader, HueSaturationShader, IACESFilmicToneMappingShader, IAfterimageShader, IBasicShader, IBleachBypassShader, IBokehShader, IConvolutionShader, ICopyShader, IDepthLimitedBlurShader, IGammaCorrectionShader, IHorizontalBlurShader, IKS, INumericUniform, ISAOShader, IShader, IVerticalBlurShader, ImprovedNoise, InstancedFlow, InteractiveGroup, KMZLoader, KTX, KTX2Loader, KTXLoader, KaleidoShader, KnotCurve, LDrawLoader, LUT3dlLoader, LUT3dlResult, LUTCubeLoader, LUTCubeResult, LUTPass, LUTPassParameters, LWO, LWOLoader, LWOLoaderParameters, Lensflare, LensflareElement, LightMapContainers, LightProbeGenerator, LightProbeHelper, LightningSegment, LightningStorm, LightningStrike, LightningSubray, Line2, LineGeometry, LineMaterial, LineMaterialParameters, LineSegments2, LineSegmentsGeometry, LottieLoader, LuminosityHighPassShader, LuminosityShader, Lut, MD2Character, MD2CharacterComplex, MD2Loader, MD2PartsConfig, MDD, MDDLoader, MMDAnimationHelper, MMDAnimationHelperAddParameter, MMDAnimationHelperMixer, MMDAnimationHelperParameter, MMDAnimationHelperPoseParameter, MMDExporter, MMDLoader, MMDLoaderAnimationObject, MMDPhysics, MMDPhysicsHelper, MMDPhysicsParameter, MTLLoader, MapControls, MapControlsExp, MarchingCubes, MaskPass, MaterialCreator, MaterialCreatorOptions, MaterialInfo, MeshSurfaceSampler, MeshoptDecoder, MirrorShader, ModifiedMaterial, MorphAnimMesh, MorphBlendMesh, MorphColor, MorphNormals, MorphTarget$1 as MorphTarget, MotionController, MotionControllerConstants, NRRDLoader, NURBSCurve, NURBSSurface, NormalMapShader, NumberGenerator, OBB, OBJExporter, OBJLoader, OUTPUT, Octree, OculusHandModel, OculusHandPointerModel, OrbitControls, OrbitControlsExp, OutlineEffect, OutlineEffectParameters, OutlinePass, PCDLoader, PDB, PDBLoader, PLYExporter, PLYExporterOptions, PLYLoader, PRWMLoader, PVR, PVRLoader, ParallaxBarrierEffect, ParallaxShader, ParametricGeometries, ParametricGeometry, ParametricGeometry as ParametricBufferGeometry, Pass, PeppersGhostEffect, PixelShader, PointerLockControls, Position, PositionalAudioHelper, Profile, ProgressiveLightMap, Projector, RGBE, RGBELoader, RGBM, RGBMLoader, RGBShiftShader, RandomGenerator, RayParameters, RectAreaLightHelper, RectAreaLightUniformsLib, Reflector, ReflectorForSSRPass, ReflectorForSSRPassOptions, ReflectorOptions, ReflectorRTT, ReflectorShader, Refractor, RefractorOptions, RenderPass, RenderPixelatedPass, RenderPixelatedPassParameters, RenderableFace, RenderableLine, RenderableObject, RenderableSprite, RenderableVertex, ResourceManager, Rhino3dmLoader, RigidBody, RollerCoasterGeometry, RollerCoasterLiftersGeometry, RollerCoasterShadowGeometry, RoomEnvironment, RoughnessMipmapper, RoundedBoxGeometry, SAOPass, SAOPassParams, SAOShader, SAOShaderDefines, SAOShaderUniforms, SMAABlendShader, SMAAEdgesShader, SMAAPass, SMAAWeightsShader, SSAARenderPass, SSAOBlurShader, SSAODepthShader, SSAOPass, SSAOPassOUTPUT, SSAOShader, SSRBlurShader, SSRDepthShader, SSRPass, SSRPassParams, SSRShader, STATE, STLExporter, STLExporterOptions, STLExporterOptionsBinary, STLExporterOptionsString, STLLoader, SVGLoader, SVGObject, SVGRenderer, SVGResult, SVGResultPaths, SavePass, SceneUtils, SelectionBox, SelectionHelper, SepiaShader, SessionLightProbe, ShaderPass, ShadowMapViewer, ShadowMesh, SimplexNoise, SimplifyModifier, Size, SkeletonUtils, Sky, SkyGeometry, SobelOperatorShader, StereoEffect, StormParams, StrokeStyle, SubsurfaceScatteringShader, TAARenderPass, TDSLoader, TGALoader, TTFLoader, TeapotGeometry, TechnicolorShader, TessellateModifier, TexParams, TextGeometry, TextGeometry as TextBufferGeometry, TextGeometryParameters, TexturePass, ThreeMFLoader, TiltLoader, Timer, ToneMapShader, ToonShader1, ToonShader2, ToonShaderDotted, ToonShaderHatching, TorusKnot, TrackballControls, TrackballControlsExp, TransformControls, TransformControlsGizmo, TransformControlsPlane, TransformControlsPointerObject, TreesGeometry, TrefoilKnot, TrefoilPolynomialKnot, TriangleBlurShader, TubePainter, USDZExporter, UVBoxes, UVsDebug, Uniforms, UnpackDepthRGBAShader, UnrealBloomPass, VOXData3DTexture, VOXLoader, VOXMesh, VRButton, VRMLLoader, VRMLoader, VTKLoader, Variable, VertexList, VertexNode, VertexNormalsHelper, VertexTangentsHelper, VerticalBlurShader, VerticalBlurShaderUniforms, VerticalTiltShiftShader, VignetteShader, VivianiCurve, Volume, VolumeRenderShader1, VolumeSlice, Water, Water2, Water2Options, WaterOptions, WaterPass, WaterRefractionShader, Wireframe, WireframeGeometry2, XLoader, XRButton, XRControllerModelFactory, XREstimatedLight, XRHandMeshModel, XRHandModel, XRHandModelFactory, XRHandModelHandedness, XRHandPrimitiveModel, XRHandPrimitiveModelOptions, XResult, XYZLoader, calcBSplineDerivatives, calcBSplinePoint, calcBasisFunctionDerivatives, calcBasisFunctions, calcKoverI, calcNURBSDerivatives, calcRationalCurveDerivatives, calcSurfacePoint, computeMorphedAttributes, createText, edgeTable, estimateBytesUsed, fetchProfile, fetchProfilesList, findSpan, getErrorMessage, getUniforms, getWebGL2ErrorMessage, getWebGLErrorMessage, initSplineTexture, interleaveAttributes, isWebGL2Available, isWebGLAvailable, mergeBufferAttributes, mergeBufferGeometries, mergeVertices, modifyShader, toCreasedNormals, toTrianglesDrawMode, triTable, updateSplineTexture };
 }
 declare namespace Utils {
-	export { calculateHorizontalFoV, calculateVerticalFoV, createPromise, disposeObject3D, downloadBlob, getBounds, getCache, getCirclePosition, getElementViewLeft, getElementViewTop, hasObject, isObjectVisible };
+	export { calculateHorizontalFoV, calculateVerticalFoV, createPromise, disposeObject3D, downloadBlob, getBounds, getCache, getCirclePosition, getElementViewLeft, getElementViewTop, hasObject, isObjectVisible, lonlat2Spherical };
 }
 
 export {
