@@ -20966,6 +20966,609 @@ export declare class ExtrudeMap extends Component$1 {
 	projectPoints(points: number[][]): THREE.Vector2[];
 	dispose(): void;
 }
+type SoftShadowsProps = {
+	size?: number;
+	samples?: number;
+	focus?: number;
+};
+declare const pcss: ({ focus, size, samples }?: SoftShadowsProps) => (gl: THREE.Renderer, scene: THREE.Scene, camera: THREE.Camera) => void;
+type CausticsProjectionMaterialType = THREE.MeshNormalMaterial & {
+	viewMatrix: {
+		value?: THREE.Matrix4;
+	};
+	color?: THREE.Color;
+	causticsTexture?: THREE.Texture;
+	causticsTextureB?: THREE.Texture;
+	lightProjMatrix?: THREE.Matrix4;
+	lightViewMatrix?: THREE.Matrix4;
+};
+type CausticsProps = {
+	frames?: number;
+	causticsOnly?: boolean;
+	backside?: boolean;
+	ior?: number;
+	backsideIOR?: number;
+	worldRadius?: number;
+	intensity?: number;
+	color?: THREE.Color;
+	resolution?: number;
+	lightSource?: THREE.Vector3 | THREE.Object3D;
+	near?: number;
+	far?: number;
+};
+type CausticsProjectionShaderType = {
+	causticsTexture?: THREE.Texture | null;
+	causticsTextureB?: THREE.Texture | null;
+	color?: THREE.Color;
+	lightProjMatrix?: THREE.Matrix4;
+	lightViewMatrix?: THREE.Matrix4;
+};
+declare const CausticsProjectionMaterial: (new (parameters?: (THREE.ShaderMaterialParameters & Partial<CausticsProjectionShaderType>) | undefined) => THREE.ShaderMaterial & CausticsProjectionShaderType) & {
+	key: string;
+};
+type CausticsMaterialType = {
+	cameraMatrixWorld: THREE.Matrix4;
+	cameraProjectionMatrixInv: THREE.Matrix4;
+	normalTexture: THREE.Texture | null;
+	depthTexture: THREE.Texture | null;
+	lightDir: THREE.Vector3;
+	lightPlaneNormal: THREE.Vector3;
+	lightPlaneConstant: number;
+	near: number;
+	far: number;
+	modelMatrix: THREE.Matrix4;
+	worldRadius: number;
+	ior: number;
+	bounces: number;
+	resolution: number;
+	size: number;
+	intensity: number;
+};
+declare const CausticsMaterial: (new (parameters?: (THREE.ShaderMaterialParameters & Partial<CausticsMaterialType>) | undefined) => THREE.ShaderMaterial & CausticsMaterialType) & {
+	key: string;
+};
+type CausticsType = {
+	scene: THREE.Scene;
+	group: THREE.Group;
+	helper: THREE.CameraHelper;
+	params: CausticsProps;
+	update: () => void;
+	normalTarget: THREE.WebGLRenderTarget;
+	normalTargetB: THREE.WebGLRenderTarget;
+	causticsTarget: THREE.WebGLRenderTarget;
+	causticsTargetB: THREE.WebGLRenderTarget;
+};
+declare function createCausticsUpdate(updateParameters: () => {
+	params: Omit<CausticsProps, "color">;
+	scene: THREE.Scene;
+	group: THREE.Group;
+	camera: THREE.OrthographicCamera;
+	plane: THREE.Mesh<PlaneGeometry, InstanceType<typeof CausticsProjectionMaterial>>;
+	normalTarget: THREE.WebGLRenderTarget;
+	normalTargetB: THREE.WebGLRenderTarget;
+	causticsTarget: THREE.WebGLRenderTarget;
+	causticsTargetB: THREE.WebGLRenderTarget;
+	helper?: THREE.CameraHelper | null;
+}): (gl: THREE.WebGLRenderer) => void;
+declare const Caustics: (renderer: THREE.WebGLRenderer, { frames, causticsOnly, ior, backside, backsideIOR, worldRadius, color, intensity, resolution, lightSource, near, far, }?: CausticsProps) => CausticsType;
+type UniformValue = THREE.CubeTexture | THREE.Texture | Int32Array | Float32Array | THREE.Matrix4 | THREE.Matrix3 | THREE.Quaternion | THREE.Vector4 | THREE.Vector3 | THREE.Vector2 | THREE.Color | number | boolean | Array<any> | null;
+type UniformProps = {
+	[name: string]: UniformValue;
+};
+type ShaderMaterialInstance<TProps extends UniformProps> = THREE.ShaderMaterial & TProps;
+type ShaderMaterialParameters$1<TProps extends UniformProps> = THREE.ShaderMaterialParameters & Partial<TProps>;
+type ShaderMaterial$1<TProps extends UniformProps> = (new (parameters?: ShaderMaterialParameters$1<TProps>) => ShaderMaterialInstance<TProps>) & {
+	key: string;
+};
+declare function shaderMaterial<TProps extends UniformProps>(uniforms: TProps, vertexShader: string, fragmentShader: string, onInit?: (material: ShaderMaterialInstance<TProps>) => void): ShaderMaterial$1<TProps>;
+type SoftShadowMaterialProps = {
+	map: THREE.Texture | null;
+	color: THREE.Color;
+	alphaTest: number;
+	opacity: number;
+	blend: number;
+};
+declare const SoftShadowMaterial: (new (parameters?: (THREE.ShaderMaterialParameters & Partial<SoftShadowMaterialProps>) | undefined) => THREE.ShaderMaterial & SoftShadowMaterialProps) & {
+	key: string;
+};
+declare class ProgressiveLightMap$1 {
+	renderer: THREE.WebGLRenderer;
+	res: number;
+	scene: THREE.Scene;
+	object: THREE.Mesh | null;
+	buffer1Active: boolean;
+	progressiveLightMap1: THREE.WebGLRenderTarget;
+	progressiveLightMap2: THREE.WebGLRenderTarget;
+	discardMat: THREE.ShaderMaterial;
+	targetMat: THREE.MeshLambertMaterial;
+	previousShadowMap: {
+		value: THREE.Texture;
+	};
+	averagingWindow: {
+		value: number;
+	};
+	clearColor: THREE.Color;
+	clearAlpha: number;
+	lights: {
+		object: THREE.Light;
+		intensity: number;
+	}[];
+	meshes: {
+		object: THREE.Mesh;
+		material: THREE.Material | THREE.Material[];
+	}[];
+	constructor(renderer: THREE.WebGLRenderer, scene: THREE.Scene, res?: number);
+	clear(): void;
+	prepare(): void;
+	finish(): void;
+	configure(object: THREE.Mesh): void;
+	update(camera: THREE.Camera, blendWindow?: number): void;
+}
+declare const CLOUD_URL = "https://rawcdn.githack.com/pmndrs/drei-assets/9225a9f1fbd449d9411125c2f419b843d0308c9f/cloud.png";
+type CloudState = {
+	ref: Group;
+	uuid: string;
+	index: number;
+	segments: number;
+	dist: number;
+	matrix: Matrix4;
+	bounds: Vector3;
+	position: Vector3;
+	volume: number;
+	length: number;
+	speed: number;
+	growth: number;
+	opacity: number;
+	fade: number;
+	density: number;
+	rotation: number;
+	rotationFactor: number;
+	color: Color;
+};
+type CloudsProps = {
+	texture?: Texture | undefined;
+	limit?: number;
+	range?: number;
+	material?: typeof Material;
+	frustumCulled?: boolean;
+};
+type CloudProps = {
+	seed?: number;
+	segments?: number;
+	bounds?: Vector3;
+	concentrate?: "random" | "inside" | "outside";
+	scale?: Vector3;
+	volume?: number;
+	smallestVolume?: number;
+	distribute?: ((cloud: CloudState, index: number) => {
+		point: Vector3;
+		volume?: number;
+	}) | null;
+	growth?: number;
+	speed?: number;
+	fade?: number;
+	opacity?: number;
+	color?: Color;
+};
+declare class Clouds extends Group {
+	ref: Group;
+	instance: InstancedMesh;
+	cloudMaterial: Material;
+	update: (camera: Camera, time: number, delta: number) => void;
+	constructor({ limit, range, material, texture, frustumCulled }?: CloudsProps);
+}
+declare class Cloud extends Group {
+	seed: number;
+	segments: number;
+	bounds: Vector3;
+	concentrate: string;
+	volume: number;
+	smallestVolume: number;
+	distribute: ((cloud: CloudState, index: number) => {
+		point: Vector3;
+		volume?: number | undefined;
+	}) | null;
+	growth: number;
+	speed: number;
+	fade: number;
+	opacity: number;
+	color: Color;
+	ref: any;
+	cloudStateArray: CloudState[];
+	constructor({ opacity, speed, bounds, segments, color, fade, volume, smallestVolume, distribute, growth, concentrate, seed, }?: CloudProps);
+	updateCloudStateArray(): void;
+	updateCloud(): void;
+}
+type FBOSettings = {
+	samples?: number;
+	depth?: boolean;
+} & THREE.RenderTargetOptions;
+declare function useFBO(width?: number, height?: number, settings?: FBOSettings): THREE.WebGLRenderTarget;
+type SpriteAnimatorProps = {
+	startFrame?: number;
+	endFrame?: number;
+	fps?: number;
+	frameName?: string;
+	textureDataURL?: string;
+	textureImageURL: string;
+	loop?: boolean;
+	numberOfFrames?: number;
+	autoPlay?: boolean;
+	animationNames?: Array<string>;
+	onStart?: Function;
+	onEnd?: Function;
+	onLoopEnd?: Function;
+	onFrame?: Function;
+	play?: boolean;
+	pause?: boolean;
+	flipX?: boolean;
+	position?: Array<number>;
+	alphaTest?: number;
+	asSprite?: boolean;
+};
+type SpriteAnimatorType = {
+	group: THREE.Group;
+	init: Function;
+	update: Function;
+	pauseAnimation: Function;
+	playAnimation: Function;
+	setFrameName: Function;
+};
+declare const SpriteAnimator: ({ startFrame, endFrame, fps, frameName, textureDataURL, textureImageURL, loop, numberOfFrames, autoPlay, animationNames, onStart, onEnd, onLoopEnd, onFrame, play, pause, flipX, alphaTest, asSprite, }: SpriteAnimatorProps) => SpriteAnimatorType;
+type OutlinesProps = {
+	color?: THREE.Color;
+	screenspace?: boolean;
+	opacity?: number;
+	transparent?: boolean;
+	thickness?: number;
+	angle?: number;
+	toneMapped?: boolean;
+	polygonOffset?: boolean;
+	polygonOffsetFactor?: number;
+	renderOrder?: number;
+	gl?: THREE.WebGLRenderer;
+};
+type OutlinesType = {
+	group: THREE.Group;
+	updateProps: (props: Partial<OutlinesProps>) => void;
+	generate: () => void;
+};
+declare function Outlines({ color, opacity, transparent, screenspace, toneMapped, polygonOffset, polygonOffsetFactor, renderOrder, thickness, angle, gl, }: Partial<OutlinesProps>): OutlinesType;
+type BillboardProps = {
+	follow?: boolean;
+	lockX?: boolean;
+	lockY?: boolean;
+	lockZ?: boolean;
+};
+type BillboardType = {
+	group: THREE.Group;
+	update: (camera: THREE.Camera) => void;
+	updateProps: (newProps: Partial<BillboardProps>) => void;
+};
+declare const Billboard: ({ follow, lockX, lockY, lockZ, }?: BillboardProps) => BillboardType;
+type TextProps = {
+	text: string;
+	characters?: string;
+	color?: number | string;
+	fontSize?: number;
+	maxWidth?: number;
+	lineHeight?: number;
+	letterSpacing?: number;
+	textAlign?: "left" | "right" | "center" | "justify";
+	font?: string;
+	anchorX?: number | "left" | "center" | "right";
+	anchorY?: number | "top" | "top-baseline" | "middle" | "bottom-baseline" | "bottom";
+	clipRect?: [
+		number,
+		number,
+		number,
+		number
+	];
+	depthOffset?: number;
+	direction?: "auto" | "ltr" | "rtl";
+	overflowWrap?: "normal" | "break-word";
+	whiteSpace?: "normal" | "overflowWrap" | "nowrap";
+	outlineWidth?: number | string;
+	outlineOffsetX?: number | string;
+	outlineOffsetY?: number | string;
+	outlineBlur?: number | string;
+	outlineColor?: number | string;
+	outlineOpacity?: number;
+	strokeWidth?: number | string;
+	strokeColor?: number | string;
+	strokeOpacity?: number;
+	fillOpacity?: number;
+	sdfGlyphSize?: number;
+	debugSDF?: boolean;
+	onSync?: (troika: any) => void;
+	onPreloadEnd?: () => void;
+};
+type TextType = {
+	mesh: Mesh;
+	updateProps: (newProps: Partial<TextProps>) => void;
+	dispose: () => void;
+};
+declare const Text$1: ({ sdfGlyphSize, anchorX, anchorY, fontSize, ...restProps }: TextProps) => TextType;
+type SplatMaterialType = {
+	alphaTest?: number;
+	alphaHash?: boolean;
+	centerAndScaleTexture?: THREE.DataTexture;
+	covAndColorTexture?: THREE.DataTexture;
+	viewport?: THREE.Vector2;
+	focal?: number;
+};
+type TargetMesh = THREE.Mesh<THREE.InstancedBufferGeometry, THREE.ShaderMaterial & SplatMaterialType> & {
+	ready: boolean;
+	sorted: boolean;
+	pm: THREE.Matrix4;
+	vm1: THREE.Matrix4;
+	vm2: THREE.Matrix4;
+	viewport: THREE.Vector4;
+};
+type SharedState = {
+	url: string;
+	gl: THREE.WebGLRenderer;
+	worker: Worker;
+	manager: THREE.LoadingManager;
+	stream: ReadableStreamDefaultReader<Uint8Array>;
+	loading: boolean;
+	loaded: boolean;
+	loadedVertexCount: number;
+	rowLength: number;
+	maxVertexes: number;
+	chunkSize: number;
+	totalDownloadBytes: number;
+	numVertices: number;
+	bufferTextureWidth: number;
+	bufferTextureHeight: number;
+	centerAndScaleData: Float32Array;
+	covAndColorData: Uint32Array;
+	covAndColorTexture: THREE.DataTexture;
+	centerAndScaleTexture: THREE.DataTexture;
+	connect(target: TargetMesh): () => void;
+	update(target: TargetMesh, camera: THREE.Camera, hashed: boolean): void;
+	onProgress?: (event: ProgressEvent) => void;
+};
+declare class SplatLoader extends THREE.Loader {
+	gl: THREE.WebGLRenderer;
+	chunkSize: number;
+	constructor(gl: THREE.WebGLRenderer, chunkSize?: number);
+	loadAsync(url: string, onProgress?: (event: ProgressEvent) => void, onError?: (event: ErrorEvent) => void): Promise<unknown>;
+	load(url: string, onLoad: (data: SharedState) => void, onProgress?: (event: ProgressEvent) => void, onError?: (event: ErrorEvent) => void): void;
+}
+declare class Splat extends THREE.Mesh {
+	constructor(shared: any, camera: THREE.Camera, { toneMapped, alphaTest, alphaHash }?: {
+		toneMapped?: boolean | undefined;
+		alphaTest?: number | undefined;
+		alphaHash?: boolean | undefined;
+	});
+}
+type GridProps = {
+	args?: Array<number>;
+	cellSize?: number;
+	cellThickness?: number;
+	cellColor?: THREE.Color;
+	sectionSize?: number;
+	sectionThickness?: number;
+	sectionColor?: THREE.Color;
+	followCamera?: boolean;
+	infiniteGrid?: boolean;
+	fadeDistance?: number;
+	fadeStrength?: number;
+	side?: THREE.Side;
+};
+type GridType = {
+	mesh: THREE.Mesh;
+	update: (camera: THREE.Camera) => void;
+};
+declare const Grid: ({ args, cellColor, sectionColor, cellSize, sectionSize, followCamera, infiniteGrid, fadeDistance, fadeStrength, cellThickness, sectionThickness, side, }?: GridProps) => GridType;
+declare const MeshDiscardMaterial: (new (parameters?: (ShaderMaterialParameters & Partial<{}>) | undefined) => ShaderMaterial) & {
+	key: string;
+};
+interface Uniform$1<T> {
+	value: T;
+}
+declare class MeshTransmissionMaterial extends THREE.MeshPhysicalMaterial {
+	uniforms: {
+		chromaticAberration: Uniform$1<number>;
+		transmission: Uniform$1<number>;
+		transmissionMap: Uniform$1<THREE.Texture | null>;
+		_transmission: Uniform$1<number>;
+		thickness: Uniform$1<number>;
+		roughness: Uniform$1<number>;
+		thicknessMap: Uniform$1<THREE.Texture | null>;
+		attenuationDistance: Uniform$1<number>;
+		attenuationColor: Uniform$1<THREE.Color>;
+		anisotropicBlur: Uniform$1<number>;
+		time: Uniform$1<number>;
+		distortion: Uniform$1<number>;
+		distortionScale: Uniform$1<number>;
+		temporalDistortion: Uniform$1<number>;
+		buffer: Uniform$1<THREE.Texture | null>;
+	};
+	constructor({ samples, transmissionSampler, chromaticAberration, transmission, _transmission, transmissionMap, roughness, thickness, thicknessMap, attenuationDistance, attenuationColor, anisotropicBlur, time, distortion, distortionScale, temporalDistortion, buffer, }?: {
+		samples?: number | undefined;
+		transmissionSampler?: boolean | undefined;
+		chromaticAberration?: number | undefined;
+		transmission?: number | undefined;
+		_transmission?: number | undefined;
+		transmissionMap?: null | undefined;
+		roughness?: number | undefined;
+		thickness?: number | undefined;
+		thicknessMap?: null | undefined;
+		attenuationDistance?: number | undefined;
+		attenuationColor?: THREE.Color | undefined;
+		anisotropicBlur?: number | undefined;
+		time?: number | undefined;
+		distortion?: number | undefined;
+		distortionScale?: number | undefined;
+		temporalDistortion?: number | undefined;
+		buffer?: null | undefined;
+	});
+}
+type SpotLightMaterialProps = {
+	depth: Texture | null;
+	opacity: number;
+	attenuation: number;
+	anglePower: number;
+	spotPosition: Vector3;
+	lightColor: Color;
+	cameraNear: number;
+	cameraFar: number;
+	resolution: Vector2;
+	transparent: boolean;
+	depthWrite: boolean;
+};
+declare const SpotLightMaterial: (new (parameters?: (ShaderMaterialParameters & Partial<SpotLightMaterialProps>) | undefined) => ShaderMaterial & SpotLightMaterialProps) & {
+	key: string;
+};
+declare class ConvolutionMaterial extends ShaderMaterial {
+	readonly kernel: Float32Array;
+	constructor(texelSize?: Vector2);
+	setTexelSize(x: number, y: number): void;
+	setResolution(resolution: Vector2): void;
+}
+interface BlurPassProps {
+	gl: WebGLRenderer;
+	resolution: number;
+	width?: number;
+	height?: number;
+	minDepthThreshold?: number;
+	maxDepthThreshold?: number;
+	depthScale?: number;
+	depthToBlurRatioBias?: number;
+}
+declare class BlurPass {
+	readonly renderTargetA: WebGLRenderTarget;
+	readonly renderTargetB: WebGLRenderTarget;
+	readonly convolutionMaterial: ConvolutionMaterial;
+	readonly scene: Scene;
+	readonly camera: Camera;
+	readonly screen: Mesh;
+	renderToScreen: boolean;
+	constructor({ gl, resolution, width, height, minDepthThreshold, maxDepthThreshold, depthScale, depthToBlurRatioBias, }: BlurPassProps);
+	render(renderer: WebGLRenderer, inputBuffer: WebGLRenderTarget, outputBuffer: WebGLRenderTarget): void;
+}
+declare class MeshReflectorMaterial extends MeshStandardMaterial {
+	private _tDepth;
+	private _distortionMap;
+	private _tDiffuse;
+	private _tDiffuseBlur;
+	private _textureMatrix;
+	private _hasBlur;
+	private _mirror;
+	private _mixBlur;
+	private _blurStrength;
+	private _minDepthThreshold;
+	private _maxDepthThreshold;
+	private _depthScale;
+	private _depthToBlurRatioBias;
+	private _distortion;
+	private _mixContrast;
+	constructor(parameters?: {});
+	onBeforeCompile(shader: any): void;
+	get tDiffuse(): Texture | null;
+	set tDiffuse(v: Texture | null);
+	get tDepth(): Texture | null;
+	set tDepth(v: Texture | null);
+	get distortionMap(): Texture | null;
+	set distortionMap(v: Texture | null);
+	get tDiffuseBlur(): Texture | null;
+	set tDiffuseBlur(v: Texture | null);
+	get textureMatrix(): Matrix4 | null;
+	set textureMatrix(v: Matrix4 | null);
+	get hasBlur(): boolean;
+	set hasBlur(v: boolean);
+	get mirror(): number;
+	set mirror(v: number);
+	get mixBlur(): number;
+	set mixBlur(v: number);
+	get mixStrength(): number;
+	set mixStrength(v: number);
+	get minDepthThreshold(): number;
+	set minDepthThreshold(v: number);
+	get maxDepthThreshold(): number;
+	set maxDepthThreshold(v: number);
+	get depthScale(): number;
+	set depthScale(v: number);
+	get depthToBlurRatioBias(): number;
+	set depthToBlurRatioBias(v: number);
+	get distortion(): number;
+	set distortion(v: number);
+	get mixContrast(): number;
+	set mixContrast(v: number);
+}
+type MeshReflectorMaterialProps = {
+	mixBlur: number;
+	mixStrength: number;
+	mirror: number;
+	textureMatrix: Matrix4;
+	tDiffuse: Texture;
+	distortionMap?: Texture;
+	tDiffuseBlur: Texture;
+	hasBlur: boolean;
+	minDepthThreshold: number;
+	maxDepthThreshold: number;
+	depthScale: number;
+	depthToBlurRatioBias: number;
+	distortion: number;
+	mixContrast: number;
+};
+interface MeshDistortMaterialParameters {
+	time?: number;
+	distort?: number;
+	radius?: number;
+}
+declare class MeshDistortMaterial extends MeshPhysicalMaterial {
+	_time: IUniform<number>;
+	_distort: IUniform<number>;
+	_radius: IUniform<number>;
+	constructor({ time, distort, radius, ...parameters }?: MeshDistortMaterialParameters & MeshPhysicalMaterialParameters);
+	onBeforeCompile(shader: {
+		vertexShader: string;
+		uniforms: {
+			[uniform: string]: IUniform;
+		};
+	}): void;
+	get time(): number;
+	set time(v: number);
+	get distort(): number;
+	set distort(v: number);
+	get radius(): number;
+	set radius(v: number);
+}
+interface MeshWobbleMaterialParameters {
+	time?: number;
+	factor?: number;
+}
+declare class MeshWobbleMaterial extends MeshStandardMaterial {
+	_time: IUniform<number>;
+	_factor: IUniform<number>;
+	constructor({ time, factor, ...parameters }?: MeshStandardMaterialParameters & MeshWobbleMaterialParameters);
+	onBeforeCompile(shader: {
+		vertexShader: string;
+		uniforms: {
+			[uniform: string]: IUniform;
+		};
+	}): void;
+	get time(): number;
+	set time(v: number);
+	get factor(): number;
+	set factor(v: number);
+}
+interface Options$10 {
+	object: THREE.Object3D;
+	billboardConfig?: BillboardProps;
+}
+declare class Billboard$1 extends Component$1 {
+	options: Options$10;
+	billboard?: ReturnType<typeof Billboard>;
+	constructor(options: Options$10);
+	create(): void;
+	updateProps(props: BillboardProps): void;
+	update(): void;
+	dispose(): void;
+}
 declare const disposeObject3D: (object: THREE.Object3D) => void;
 declare const getBounds: (object: THREE.Object3D) => {
 	bbox: THREE.Box3;
@@ -21018,15 +21621,21 @@ declare namespace THREE {
 declare namespace THREE_STDLIB {
 	export { ACESFilmicToneMappingShader, ACESFilmicToneMappingShaderUniforms, AMFLoader, ARButton, AdaptiveToneMappingPass, AfterimagePass, AfterimageShader, AfterimageShaderUniforms, AmmoPhysics, AnaglyphEffect, AnimationClipCreator, ArcballControls, AsciiEffect, AsciiEffectOptions, Assimp, AssimpLoader, AudioManager, AudioManagerParameter, BVH, BVHLoader, BasicShader, BasicShaderUniforms, BasisTextureLoader, BatchedMesh$1 as BatchedMesh, BleachBypassShader, BleachBypassShaderUniforms, BlendShader, BloomPass, BlurShaderUtils, BokehDepthShader, BokehPass, BokehShader, BokehShader2, BokehShader2Uniforms, BokehShaderDefines, BokehShaderUniforms, BoxLineGeometry, BrightnessContrastShader, CCDIKHelper, CCDIKSolver, CHANGE_EVENT, CMSMode, CMSParameters, CMYK, CSM, CSMFrustum as default, CSMFrustumParameters, CSMFrustumVerticies, CSMHelper, CSMShader, CSS2DObject, CSS2DParameters, CSS2DRenderer, CSS3DObject, CSS3DParameters, CSS3DRenderer, CSS3DSprite, CameraControls, Capsule, Chunk, CinematicCamera, CinquefoilKnot, ClearMaskPass, ClearPass, Collada, ColladaExporter, ColladaExporterOptions, ColladaExporterResult, ColladaLoader, ColorConverter, ColorCorrectionShader, ColorMapKeywords, ColorifyShader, ComputedMorphedAttribute, Constraint, ConvexGeometry, ConvexHull, ConvexObjectBreaker, ConvolutionShader, ConvolutionShaderDefines, ConvolutionShaderUniforms, CopyShader, CopyShaderUniforms, CubeTexturePass, CurveModifierUniforms, CutByPlaneOutput, DDS, DDSLoader, DOFMipMapShader, DRACOExporter, DRACOLoader, DecalGeometry, DecalVertex, DecoratedTorusKnot4a, DecoratedTorusKnot4b, DecoratedTorusKnot5a, DecoratedTorusKnot5c, Defines, DepthLimitedBlurShader, DepthLimitedBlurShaderDefines, DepthLimitedBlurShaderUniforms, DeviceOrientationControls, DigitalGlitch, DotScreenPass, DotScreenShader, DragControls, EXR, EXRLoader, EdgeSplitModifier, EffectComposer, FBXLoader, FXAAShader, Face$1 as Face, Face3, FigureEightPolynomialKnot, FilmPass, FilmShader, FirstPersonControls, FlakesTexture, Flow, FlyControls, FocusShader, Font, FontLoader, FreiChenShader, FresnelShader, FullScreenQuad, GCodeLoader, GLTF, GLTFExporter, GLTFExporterOptions, GLTFExporterPlugin, GLTFLoader, GLTFLoaderPlugin, GLTFParser, GLTFReference, GLTFReferenceType, GLTFWriter, GPUComputationRenderer, GammaCorrectionShader, GammaCorrectionShaderUniforms, Geometry, GeometryCompressionUtils, GeometryUtils, GlitchPass, GodRaysCombineShader, GodRaysDepthMaskShader, GodRaysFakeSunShader, GodRaysGenerateShader, GrannyKnot, GrantSolver, GroundProjectedEnv, GroundProjectedEnvParameters, Gyroscope, HDRCubeTextureLoader, HSL$1 as HSL, HTMLMesh, HalfEdge, HalftonePass, HalftoneShader, HeartCurve, HelixCurve, HorizontalBlurShader, HorizontalBlurShaderUniforms, HorizontalTiltShiftShader, HueSaturationShader, IACESFilmicToneMappingShader, IAfterimageShader, IBasicShader, IBleachBypassShader, IBokehShader, IConvolutionShader, ICopyShader, IDepthLimitedBlurShader, IGammaCorrectionShader, IHorizontalBlurShader, IKS, INumericUniform, ISAOShader, IShader, IVerticalBlurShader, ImprovedNoise, InstancedFlow, InteractiveGroup, KMZLoader, KTX, KTX2Loader, KTXLoader, KaleidoShader, KnotCurve, LDrawLoader, LUT3dlLoader, LUT3dlResult, LUTCubeLoader, LUTCubeResult, LUTPass, LUTPassParameters, LWO, LWOLoader, LWOLoaderParameters, Lensflare, LensflareElement, LightMapContainers, LightProbeGenerator, LightProbeHelper, LightningSegment, LightningStorm, LightningStrike, LightningSubray, Line2, LineGeometry, LineMaterial, LineMaterialParameters, LineSegments2, LineSegmentsGeometry, LottieLoader, LuminosityHighPassShader, LuminosityShader, Lut, MD2Character, MD2CharacterComplex, MD2Loader, MD2PartsConfig, MDD, MDDLoader, MMDAnimationHelper, MMDAnimationHelperAddParameter, MMDAnimationHelperMixer, MMDAnimationHelperParameter, MMDAnimationHelperPoseParameter, MMDExporter, MMDLoader, MMDLoaderAnimationObject, MMDPhysics, MMDPhysicsHelper, MMDPhysicsParameter, MTLLoader, MapControls, MapControlsExp, MarchingCubes, MaskPass, MaterialCreator, MaterialCreatorOptions, MaterialInfo, MeshSurfaceSampler, MeshoptDecoder, MirrorShader, ModifiedMaterial, MorphAnimMesh, MorphBlendMesh, MorphColor, MorphNormals, MorphTarget$1 as MorphTarget, MotionController, MotionControllerConstants, NRRDLoader, NURBSCurve, NURBSSurface, NormalMapShader, NumberGenerator, OBB, OBJExporter, OBJLoader, OUTPUT, Octree, OculusHandModel, OculusHandPointerModel, OrbitControls, OrbitControlsExp, OutlineEffect, OutlineEffectParameters, OutlinePass, PCDLoader, PDB, PDBLoader, PLYExporter, PLYExporterOptions, PLYLoader, PRWMLoader, PVR, PVRLoader, ParallaxBarrierEffect, ParallaxShader, ParametricGeometries, ParametricGeometry, ParametricGeometry as ParametricBufferGeometry, Pass, PeppersGhostEffect, PixelShader, PointerLockControls, Position, PositionalAudioHelper, Profile, ProgressiveLightMap, Projector, RGBE, RGBELoader, RGBM, RGBMLoader, RGBShiftShader, RandomGenerator, RayParameters, RectAreaLightHelper, RectAreaLightUniformsLib, Reflector, ReflectorForSSRPass, ReflectorForSSRPassOptions, ReflectorOptions, ReflectorRTT, ReflectorShader, Refractor, RefractorOptions, RenderPass, RenderPixelatedPass, RenderPixelatedPassParameters, RenderableFace, RenderableLine, RenderableObject, RenderableSprite, RenderableVertex, ResourceManager, Rhino3dmLoader, RigidBody, RollerCoasterGeometry, RollerCoasterLiftersGeometry, RollerCoasterShadowGeometry, RoomEnvironment, RoughnessMipmapper, RoundedBoxGeometry, SAOPass, SAOPassParams, SAOShader, SAOShaderDefines, SAOShaderUniforms, SMAABlendShader, SMAAEdgesShader, SMAAPass, SMAAWeightsShader, SSAARenderPass, SSAOBlurShader, SSAODepthShader, SSAOPass, SSAOPassOUTPUT, SSAOShader, SSRBlurShader, SSRDepthShader, SSRPass, SSRPassParams, SSRShader, STATE, STLExporter, STLExporterOptions, STLExporterOptionsBinary, STLExporterOptionsString, STLLoader, SVGLoader, SVGObject, SVGRenderer, SVGResult, SVGResultPaths, SavePass, SceneUtils, SelectionBox, SelectionHelper, SepiaShader, SessionLightProbe, ShaderPass, ShadowMapViewer, ShadowMesh, SimplexNoise, SimplifyModifier, Size, SkeletonUtils, Sky, SkyGeometry, SobelOperatorShader, StereoEffect, StormParams, StrokeStyle, SubsurfaceScatteringShader, TAARenderPass, TDSLoader, TGALoader, TTFLoader, TeapotGeometry, TechnicolorShader, TessellateModifier, TexParams, TextGeometry, TextGeometry as TextBufferGeometry, TextGeometryParameters, TexturePass, ThreeMFLoader, TiltLoader, Timer, ToneMapShader, ToonShader1, ToonShader2, ToonShaderDotted, ToonShaderHatching, TorusKnot, TrackballControls, TrackballControlsExp, TransformControls, TransformControlsGizmo, TransformControlsPlane, TransformControlsPointerObject, TreesGeometry, TrefoilKnot, TrefoilPolynomialKnot, TriangleBlurShader, TubePainter, USDZExporter, UVBoxes, UVsDebug, Uniforms, UnpackDepthRGBAShader, UnrealBloomPass, VOXData3DTexture, VOXLoader, VOXMesh, VRButton, VRMLLoader, VRMLoader, VTKLoader, Variable, VertexList, VertexNode, VertexNormalsHelper, VertexTangentsHelper, VerticalBlurShader, VerticalBlurShaderUniforms, VerticalTiltShiftShader, VignetteShader, VivianiCurve, Volume, VolumeRenderShader1, VolumeSlice, Water, Water2, Water2Options, WaterOptions, WaterPass, WaterRefractionShader, Wireframe, WireframeGeometry2, XLoader, XRButton, XRControllerModelFactory, XREstimatedLight, XRHandMeshModel, XRHandModel, XRHandModelFactory, XRHandModelHandedness, XRHandPrimitiveModel, XRHandPrimitiveModelOptions, XResult, XYZLoader, calcBSplineDerivatives, calcBSplinePoint, calcBasisFunctionDerivatives, calcBasisFunctions, calcKoverI, calcNURBSDerivatives, calcRationalCurveDerivatives, calcSurfacePoint, computeMorphedAttributes, createText, edgeTable, estimateBytesUsed, fetchProfile, fetchProfilesList, findSpan, getErrorMessage, getUniforms, getWebGL2ErrorMessage, getWebGLErrorMessage, initSplineTexture, interleaveAttributes, isWebGL2Available, isWebGLAvailable, mergeBufferAttributes, mergeBufferGeometries, mergeVertices, modifyShader, toCreasedNormals, toTrianglesDrawMode, triTable, updateSplineTexture };
 }
+declare namespace Drei {
+	export { Billboard, BillboardProps, BillboardType, BlurPass, BlurPassProps, CLOUD_URL, Caustics, CausticsMaterial, CausticsMaterialType, CausticsProjectionMaterial, CausticsProjectionMaterialType, CausticsProjectionShaderType, CausticsProps, CausticsType, Cloud, Clouds, ConvolutionMaterial, Grid, GridProps, GridType, MeshDiscardMaterial, MeshDistortMaterial, MeshDistortMaterialParameters, MeshReflectorMaterial, MeshReflectorMaterialProps, MeshTransmissionMaterial, MeshWobbleMaterial, MeshWobbleMaterialParameters, Outlines, OutlinesProps, OutlinesType, ProgressiveLightMap$1 as ProgressiveLightMap, SharedState, SoftShadowMaterial, Splat, SplatLoader, SplatMaterialType, SpotLightMaterial, SpriteAnimator, SpriteAnimatorProps, SpriteAnimatorType, TargetMesh, Text$1 as Text, TextProps, TextType, createCausticsUpdate, pcss, shaderMaterial, useFBO };
+}
 declare namespace Utils {
 	export { calculateHorizontalFoV, calculateVerticalFoV, createPromise, disposeObject3D, downloadBlob, getBounds, getCache, getCirclePosition, getElementViewLeft, getElementViewTop, hasObject, isObjectVisible, lonlat2Spherical };
 }
 
 export {
+	Billboard$1 as Billboard,
 	Component$1 as Component,
+	Drei,
 	InteractionManager$1 as InteractionManager,
 	Line$1 as Line,
 	Options$1 as SceneOptions,
+	Options$10 as BillboardOptions,
 	Options$2 as RendererOptions,
 	Options$3 as CameraOptions,
 	Options$4 as ComposerOptions,
