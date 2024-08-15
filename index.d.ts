@@ -20866,6 +20866,7 @@ interface Options$6 {
 		duration?: number;
 		delay?: number;
 		repeat?: number;
+		repeatDelay?: number;
 	};
 }
 declare class Line$1 extends Component$1 {
