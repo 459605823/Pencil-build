@@ -20838,7 +20838,6 @@ export declare class MeshLineMaterial extends THREE.ShaderMaterial implements Me
 	useAlphaMap: number;
 	color: THREE.Color;
 	gradient: THREE.Color[];
-	opacity: number;
 	resolution: THREE.Vector2;
 	sizeAttenuation: number;
 	dashArray: number;
@@ -20847,7 +20846,6 @@ export declare class MeshLineMaterial extends THREE.ShaderMaterial implements Me
 	useDash: number;
 	useGradient: number;
 	visibility: number;
-	alphaTest: number;
 	repeat: THREE.Vector2;
 	constructor(parameters: MeshLineMaterialParameters);
 	copy(source: MeshLineMaterial): this;
@@ -20855,6 +20853,7 @@ export declare class MeshLineMaterial extends THREE.ShaderMaterial implements Me
 export declare function raycast(this: THREE.Mesh<THREE.BufferGeometry, MeshLineMaterial>, raycaster: THREE.Raycaster, intersects: THREE.Intersection[]): void;
 type MaterialParameters$1 = Omit<MeshLineMaterialParameters, "resolution"> & {
 	transparent?: boolean;
+	blending?: THREE.Blending;
 };
 interface Options$6 {
 	points: THREE.Vector3[];
