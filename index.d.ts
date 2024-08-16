@@ -20771,8 +20771,81 @@ export declare class Pencil<T extends Record<string, Manager> = Record<string, M
 	stop(): void;
 	dispose(): void;
 }
-export type PointsRepresentation = THREE.BufferGeometry | Float32Array | THREE.Vector3[] | THREE.Vector2[] | THREE.Vector3Tuple[] | THREE.Vector2Tuple[] | number[];
-export type WidthCallback = (p: number) => any;
+interface MeshLineMaterialParameters {
+	lineWidth?: number;
+	map?: THREE.Texture;
+	useMap?: number;
+	alphaMap?: THREE.Texture;
+	useAlphaMap?: number;
+	color?: string | THREE.Color | number;
+	gradient?: string[] | THREE.Color[] | number[];
+	opacity?: number;
+	resolution: THREE.Vector2;
+	sizeAttenuation?: number;
+	dashArray?: number;
+	dashOffset?: number;
+	dashRatio?: number;
+	useDash?: number;
+	useGradient?: number;
+	visibility?: number;
+	alphaTest?: number;
+	repeat?: THREE.Vector2;
+	offset?: THREE.Vector2;
+}
+export declare class MeshLineMaterial extends THREE.ShaderMaterial implements MeshLineMaterialParameters {
+	lineWidth: number;
+	map: THREE.Texture;
+	useMap: number;
+	alphaMap: THREE.Texture;
+	useAlphaMap: number;
+	color: THREE.Color;
+	gradient: THREE.Color[];
+	resolution: THREE.Vector2;
+	sizeAttenuation: number;
+	dashArray: number;
+	dashOffset: number;
+	dashRatio: number;
+	useDash: number;
+	useGradient: number;
+	visibility: number;
+	repeat: THREE.Vector2;
+	offset: THREE.Vector2;
+	constructor(parameters: MeshLineMaterialParameters);
+	copy(source: MeshLineMaterial): this;
+}
+type MaterialParameters$1 = Omit<MeshLineMaterialParameters, "resolution"> & {
+	transparent?: boolean;
+	blending?: THREE.Blending;
+};
+interface Options$6 {
+	points: THREE.Vector3[];
+	material: MaterialParameters$1;
+	wcb?: (p: number) => void;
+	pickable?: boolean;
+	useCache?: boolean;
+	animation?: {
+		animationType?: "texture" | "dash";
+		duration?: number;
+		delay?: number;
+		repeat?: number;
+		repeatDelay?: number;
+	};
+}
+declare class Line$1 extends Component$1 {
+	options: Options$6;
+	material?: MeshLineMaterial;
+	tween?: gsap.core.Tween;
+	constructor(options: Options$6);
+	create(): void;
+	animateIn(duration: number): void;
+	animateTexture(): void;
+	animateDash(): void;
+	render(): void;
+	setSize(width: number, height: number): void;
+	dispose(): void;
+}
+type PointsRepresentation = THREE.BufferGeometry | Float32Array | THREE.Vector3[] | THREE.Vector2[] | THREE.Vector3Tuple[] | THREE.Vector2Tuple[] | number[];
+type WidthCallback = (p: number) => any;
 export declare class MeshLineGeometry extends THREE.BufferGeometry {
 	type: string;
 	isMeshLine: boolean;
@@ -20810,75 +20883,7 @@ export declare class MeshLineGeometry extends THREE.BufferGeometry {
 	 */
 	advance({ x, y, z }: THREE.Vector3): void;
 }
-export interface MeshLineMaterialParameters {
-	lineWidth?: number;
-	map?: THREE.Texture;
-	useMap?: number;
-	alphaMap?: THREE.Texture;
-	useAlphaMap?: number;
-	color?: string | THREE.Color | number;
-	gradient?: string[] | THREE.Color[] | number[];
-	opacity?: number;
-	resolution: THREE.Vector2;
-	sizeAttenuation?: number;
-	dashArray?: number;
-	dashOffset?: number;
-	dashRatio?: number;
-	useDash?: number;
-	useGradient?: number;
-	visibility?: number;
-	alphaTest?: number;
-	repeat?: THREE.Vector2;
-}
-export declare class MeshLineMaterial extends THREE.ShaderMaterial implements MeshLineMaterialParameters {
-	lineWidth: number;
-	map: THREE.Texture;
-	useMap: number;
-	alphaMap: THREE.Texture;
-	useAlphaMap: number;
-	color: THREE.Color;
-	gradient: THREE.Color[];
-	resolution: THREE.Vector2;
-	sizeAttenuation: number;
-	dashArray: number;
-	dashOffset: number;
-	dashRatio: number;
-	useDash: number;
-	useGradient: number;
-	visibility: number;
-	repeat: THREE.Vector2;
-	constructor(parameters: MeshLineMaterialParameters);
-	copy(source: MeshLineMaterial): this;
-}
 export declare function raycast(this: THREE.Mesh<THREE.BufferGeometry, MeshLineMaterial>, raycaster: THREE.Raycaster, intersects: THREE.Intersection[]): void;
-type MaterialParameters$1 = Omit<MeshLineMaterialParameters, "resolution"> & {
-	transparent?: boolean;
-	blending?: THREE.Blending;
-};
-interface Options$6 {
-	points: THREE.Vector3[];
-	material: MaterialParameters$1;
-	wcb?: (p: number) => void;
-	pickable?: boolean;
-	useCache?: boolean;
-	animation?: {
-		duration?: number;
-		delay?: number;
-		repeat?: number;
-		repeatDelay?: number;
-	};
-}
-declare class Line$1 extends Component$1 {
-	options: Options$6;
-	material?: MeshLineMaterial;
-	tween?: gsap.core.Tween;
-	constructor(options: Options$6);
-	create(): void;
-	animateIn(duration: number): void;
-	render(): void;
-	setSize(width: number, height: number): void;
-	dispose(): void;
-}
 interface Options$7 {
 	sphere?: {
 		radius: number;
