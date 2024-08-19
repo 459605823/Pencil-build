@@ -20938,6 +20938,7 @@ declare class Polygon extends THREE.Object3D {
 	_line: THREE.Group | undefined;
 	get mesh(): THREE.Group<THREE.Object3DEventMap> | undefined;
 	get line(): THREE.Group<THREE.Object3DEventMap> | undefined;
+	get center(): THREE.Vector3;
 	constructor(options: PolygonOptions);
 	create(polygons: THREE.Vector2[][], depth: number): void;
 	createLine(pts: THREE.Vector2[], depth: number): MeshLineGeometry;
